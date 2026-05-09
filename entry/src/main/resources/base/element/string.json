@@ -1,0 +1,96 @@
+{
+  "string": [
+    {
+      "name": "navigation_drawer",
+      "value": "Navigation Drawer"
+    },
+    {
+      "name": "close_drawer",
+      "value": "Close drawer"
+    },
+    {
+      "name": "tab_inbox",
+      "value": "Inbox"
+    },
+    {
+      "name": "tab_article",
+      "value": "Articles"
+    },
+    {
+      "name": "tab_dm",
+      "value": "Direct Messages"
+    },
+    {
+      "name": "tab_groups",
+      "value": "Groups"
+    },
+    {
+      "name": "profile",
+      "value": "Profile"
+    },
+    {
+      "name": "search",
+      "value": "Search"
+    },
+    {
+      "name": "reply",
+      "value": "Reply"
+    },
+    {
+      "name": "reply_all",
+      "value": "Reply All"
+    },
+    {
+      "name": "edit",
+      "value": "Edit"
+    },
+    {
+      "name": "compose",
+      "value": "Compose"
+    },
+    {
+      "name": "empty_screen_title",
+      "value": "Screen under construction"
+    },
+    {
+      "name": "empty_screen_subtitle",
+      "value": "This screen is still under construction. This sample will help you learn about adaptive layouts in Jetpack Compose"
+    },
+    {
+      "name": "back_button",
+      "value": "Back"
+    },
+    {
+      "name": "more_options_button",
+      "value": "More options"
+    },
+    {
+      "name": "messages",
+      "value": "Messages"
+    },
+    {
+      "name": "four_hours_ago",
+      "value": "4 hrs ago"
+    },
+    {
+      "name": "search_emails",
+      "value": "Search emails"
+    },
+    {
+      "name": "no_item_found",
+      "value": "No item found"
+    },
+    {
+      "name": "no_search_history",
+      "value": "No search history"
+    },
+    {
+      "name": "module_desc",
+      "value": "Reply entry module"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Reply entry ability"
+    }
+  ]
+}

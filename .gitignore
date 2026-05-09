@@ -1,0 +1,20 @@
+﻿# Build outputs
+.hvigor/
+entry/build/
+entry/.cache/
+build/
+*.hap
+*.hsp
+*.har
+*.log
+
+# IDE
+.idea/
+*.iml
+
+# Dependencies / package cache
+oh_modules/
+
+# OS
+.DS_Store
+Thumbs.db
