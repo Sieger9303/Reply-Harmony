@@ -3,16 +3,17 @@ package ohos_app_cangjie_entry.ui
 import kit.ArkUI.*
 import ohos.arkui.state_macro_manage.*
 import std.collection.*
+import std.unicode.*
 import ohos_app_cangjie_entry.data.*
 import ohos_app_cangjie_entry.ui.components.*
 import ohos_app_cangjie_entry.ui.theme.*
 import ohos_app_cangjie_entry.ui.utils.*
 
-func containsQuery(text: String, query: String): Bool {
+func startsWithIgnoreCase(text: String, query: String): Bool {
     if (query.isEmpty()) {
         return true
     }
-    text.contains(query)
+    text.toLower().startsWith(query.toLower())
 }
 
 @Component
@@ -29,7 +30,7 @@ public class ReplyInboxScreen {
     func filteredEmails(): Array<Email> {
         var result = ArrayList<Email>()
         for (email in this.homeState.uiState.emails) {
-            if (containsQuery(email.subject, this.query) || containsQuery(email.sender.fullName, this.query)) {
+            if (startsWithIgnoreCase(email.subject, this.query) || startsWithIgnoreCase(email.sender.fullName, this.query)) {
                 result.add(email)
             }
         }
@@ -68,7 +69,7 @@ public class ReplyInboxScreen {
                     Scroll() {
                         Column() {
                             ForEach(this.homeState.uiState.emails, itemGeneratorFunc: { email: Email, _: Int64 =>
-                                if (containsQuery(email.subject, this.query) || containsQuery(email.sender.fullName, this.query)) {
+                                if (startsWithIgnoreCase(email.subject, this.query) || startsWithIgnoreCase(email.sender.fullName, this.query)) {
                                     Column() {
                                         BuildEmailListItem(
                                             email,

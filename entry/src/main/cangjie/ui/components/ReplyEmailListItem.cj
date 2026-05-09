@@ -40,11 +40,7 @@ class ReplyEmailListItemView {
         this.cancelLongPressTimer()
         this.longPressTriggered = false
         if (!didLongPress) {
-            if (this.isSelected) {
-                this.onToggleSelection()
-            } else {
-                this.onOpen()
-            }
+            this.onOpen()
         }
     }
 

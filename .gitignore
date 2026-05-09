@@ -18,3 +18,10 @@ oh_modules/
 # OS
 .DS_Store
 Thumbs.db
+
+**/cj_res
+**/*.cj.macrocall
+**/ability_mainability_entry.cj
+**/module_**_entry.cj
+**/IDL_Dependencies_List~
+**/build-script-cache

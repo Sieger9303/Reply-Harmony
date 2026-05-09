@@ -14,7 +14,7 @@ class ReplyRootPage {
     @State var currentBreakpoint: String = "xs"
     @State var windowWidth: Float64 = 0.0
     @State var drawerOpen: Bool = false
-    @State var navigationController: ReplyNavigationController = ReplyNavigationController(Route.Inbox)
+    @State var currentRoute: Route = Route.Inbox
     @State var homeState: ReplyHomeStateHolder = ReplyHomeStateHolder(EmailsRepositoryImpl())
 
     func adaptiveLayoutState(): ReplyAdaptiveLayoutState {
@@ -34,7 +34,7 @@ class ReplyRootPage {
     }
 
     func navigateTo(route: Route): Unit {
-        this.navigationController.navigateTo(route)
+        this.currentRoute = route
         this.drawerOpen = false
     }
 
@@ -64,7 +64,7 @@ class ReplyRootPage {
                     BuildReplyNavigationWrapper(
                         this.currentNavigationType(),
                         this.currentNavigationContentPosition(),
-                        this.navigationController.currentRoute,
+                        this.currentRoute,
                         this.drawerOpen,
                         this.homeState,
                         this.currentContentType(),
