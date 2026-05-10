@@ -16,6 +16,7 @@ class ReplyEmailListItemView {
 
     @State var longPressTriggered: Bool = false
     @State var longPressTimer: ?Timer = Option<Timer>.None
+    @State var ignoreNextRelease: Bool = false
 
     func cancelLongPressTimer(): Unit {
         match (this.longPressTimer) {
@@ -25,9 +26,17 @@ class ReplyEmailListItemView {
         this.longPressTimer = Option<Timer>.None
     }
 
+    func handleSelectorClick(): Unit {
+        this.ignoreNextRelease = true
+        this.cancelLongPressTimer()
+        this.longPressTriggered = false
+        this.onToggleSelection()
+    }
+
     func scheduleLongPress(): Unit {
         this.cancelLongPressTimer()
         this.longPressTriggered = false
+        this.ignoreNextRelease = false
         this.longPressTimer = Some(Timer.after(500 * Duration.millisecond, { =>
             this.longPressTriggered = true
             this.onToggleSelection()
@@ -37,9 +46,11 @@ class ReplyEmailListItemView {
 
     func handleTouchRelease(): Unit {
         let didLongPress = this.longPressTriggered
+        let shouldIgnoreRelease = this.ignoreNextRelease
         this.cancelLongPressTimer()
         this.longPressTriggered = false
-        if (!didLongPress) {
+        this.ignoreNextRelease = false
+        if (!didLongPress && !shouldIgnoreRelease) {
             this.onOpen()
         }
     }
@@ -54,7 +65,7 @@ class ReplyEmailListItemView {
                         BuildReplyProfileImage(this.email.sender.avatar, 40)
                     }
                 }
-                .onClick({ _ => this.onToggleSelection() })
+                .onClick({ _ => this.handleSelectorClick() })
 
                 Column() {
                     Text(this.email.sender.firstName)

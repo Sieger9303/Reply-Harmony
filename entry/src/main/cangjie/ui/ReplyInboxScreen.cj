@@ -22,6 +22,7 @@ public class ReplyInboxScreen {
     @Prop var contentType: ReplyContentType
     @State var query: String = ""
     @State var searchExpanded: Bool = false
+    @State var refreshVersion: Int32 = 0
 
     func isDualPane(): Bool {
         this.contentType == ReplyContentType.DUAL_PANE
@@ -46,6 +47,17 @@ public class ReplyInboxScreen {
 
     func openEmail(email: Email): Unit {
         this.homeState.setOpenedEmail(email.id, this.contentType)
+        this.refreshVersion += 1
+    }
+
+    func toggleSelectedEmail(email: Email): Unit {
+        this.homeState.toggleSelectedEmail(email.id)
+        this.refreshVersion += 1
+    }
+
+    func closeDetailScreen(): Unit {
+        this.homeState.closeDetailScreen()
+        this.refreshVersion += 1
     }
 
     public func build() {
@@ -71,13 +83,13 @@ public class ReplyInboxScreen {
                             ForEach(this.homeState.uiState.emails, itemGeneratorFunc: { email: Email, _: Int64 =>
                                 if (startsWithIgnoreCase(email.subject, this.query) || startsWithIgnoreCase(email.sender.fullName, this.query)) {
                                     Column() {
-                                        BuildEmailListItem(
-                                            email,
-                                            this.currentEmail().id == email.id,
-                                            this.homeState.uiState.selectedEmails.contains(email.id),
-                                            { => this.openEmail(email) },
-                                            { => this.homeState.toggleSelectedEmail(email.id) }
-                                        )
+                                         BuildEmailListItem(
+                                             email,
+                                             this.currentEmail().id == email.id,
+                                             this.homeState.uiState.selectedEmails.contains(email.id),
+                                             { => this.openEmail(email) },
+                                             { => this.toggleSelectedEmail(email) }
+                                         )
                                     }
                                     .width(100.percent)
                                     .margin(left: 12, right: 12, top: 4, bottom: 4)
@@ -96,7 +108,7 @@ public class ReplyInboxScreen {
             if (this.isDualPane() || this.homeState.uiState.isDetailOnlyOpen) {
                 GridCol() {
                     Column() {
-                        BuildEmailDetailHeader(this.currentEmail(), !this.isDualPane(), { => this.homeState.closeDetailScreen() })
+                        BuildEmailDetailHeader(this.currentEmail(), !this.isDualPane(), { => this.closeDetailScreen() })
 
                         Scroll() {
                             Column() {

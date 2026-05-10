@@ -40,7 +40,7 @@ func BuildWrapperRouteContent(currentRoute: Route, homeState: ReplyHomeStateHold
 }
 
 @Builder
-public func BuildRouteTabLabel(icon: String, route: Route, selected: Bool): Unit {
+public func BuildRouteTabLabel(icon: String, route: Route, selected: Bool, onClick: () -> Unit): Unit {
     Column() {
         Image(mediaResourceForName(icon))
             .width(20)
@@ -74,6 +74,9 @@ public func BuildRouteTabLabel(icon: String, route: Route, selected: Bool): Unit
     }
     .width(100.percent)
     .padding(top: 10, bottom: 10)
+    .justifyContent(FlexAlign.Center)
+    .alignItems(HorizontalAlign.Center)
+    .onClick({ _ => onClick() })
 }
 
 @Builder
@@ -169,11 +172,16 @@ func BuildDestinationRow(destination: ReplyTopLevelDestination, selected: Bool, 
 public func BuildReplyBottomNavigation(currentRoute: Route, onNavigate: (Route) -> Unit): Unit {
     Row() {
         ForEach(TOP_LEVEL_DESTINATIONS, itemGeneratorFunc: { destination: ReplyTopLevelDestination, _: Int64 =>
-            Column() {
-                BuildRouteTabLabel(destination.icon, destination.route, destinationSelected(currentRoute, destination))
+            Row() {
+                BuildRouteTabLabel(
+                    destination.icon,
+                    destination.route,
+                    destinationSelected(currentRoute, destination),
+                    { => onNavigate(destination.route) }
+                )
             }
             .layoutWeight(1)
-            .onClick({ _ => onNavigate(destination.route) })
+            .justifyContent(FlexAlign.Center)
         })
     }
     .width(100.percent)
