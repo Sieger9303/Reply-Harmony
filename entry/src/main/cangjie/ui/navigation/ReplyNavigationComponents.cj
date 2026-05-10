@@ -34,11 +34,13 @@ func destinationSelected(currentRoute: Route, destination: ReplyTopLevelDestinat
 public class ReplyWrapperRouteContent {
     @Prop var currentRoute: Route
     @Link var homeState: ReplyHomeStateHolder
+    @Prop var uiState: ReplyHomeUIState
+    @Prop var onUiStateChange: (ReplyHomeUIState) -> Unit
     @Prop var contentType: ReplyContentType
 
     public func build(): Unit {
         if (this.currentRoute == Route.Inbox) {
-            ReplyInboxScreen(homeState: this.homeState, contentType: this.contentType)
+            ReplyInboxScreen(homeState: this.homeState, uiState: this.uiState, onUiStateChange: this.onUiStateChange, contentType: this.contentType)
         } else {
             BuildEmptyComingSoon()
         }
@@ -390,6 +392,8 @@ public class ReplyNavigationWrapper {
     @State var activeRoute: Route = Route.Inbox
     @Link var drawerOpen: Bool
     @Link var homeState: ReplyHomeStateHolder
+    @Prop var uiState: ReplyHomeUIState
+    @Prop var onUiStateChange: (ReplyHomeUIState) -> Unit
     @Prop var contentType: ReplyContentType
     @Prop var onNavigate: (Route) -> Unit
     @Prop var onOpenDrawer: () -> Unit
@@ -416,7 +420,7 @@ public class ReplyNavigationWrapper {
         if (this.navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
             Column() {
                 Column() {
-                    ReplyWrapperRouteContent(currentRoute: this.activeRoute, homeState: this.homeState, contentType: this.contentType)
+                    ReplyWrapperRouteContent(currentRoute: this.activeRoute, homeState: this.homeState, uiState: this.uiState, onUiStateChange: this.onUiStateChange, contentType: this.contentType)
                 }
                 .layoutWeight(1)
                 .width(100.percent)
@@ -435,7 +439,7 @@ public class ReplyNavigationWrapper {
                         onOpenDrawer: { => this.handleOpenDrawer() }
                     )
                     Column() {
-                        ReplyWrapperRouteContent(currentRoute: this.activeRoute, homeState: this.homeState, contentType: this.contentType)
+                        ReplyWrapperRouteContent(currentRoute: this.activeRoute, homeState: this.homeState, uiState: this.uiState, onUiStateChange: this.onUiStateChange, contentType: this.contentType)
                     }
                     .layoutWeight(1)
                     .height(100.percent)
@@ -462,7 +466,7 @@ public class ReplyNavigationWrapper {
                     onNavigate: { route: Route => this.handleNavigate(route) }
                 )
                 Column() {
-                    ReplyWrapperRouteContent(currentRoute: this.activeRoute, homeState: this.homeState, contentType: this.contentType)
+                    ReplyWrapperRouteContent(currentRoute: this.activeRoute, homeState: this.homeState, uiState: this.uiState, onUiStateChange: this.onUiStateChange, contentType: this.contentType)
                 }
                 .layoutWeight(1)
                 .height(100.percent)
