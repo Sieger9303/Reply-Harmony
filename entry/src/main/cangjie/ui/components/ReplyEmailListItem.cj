@@ -12,6 +12,10 @@ class ReplyEmailListItemView {
     @Prop var isSelected: Bool
     @Prop var onOpen: () -> Unit
     @Prop var onToggleSelection: () -> Unit
+    @State var touchStartX: Float64 = 0.0
+    @State var touchStartY: Float64 = 0.0
+    @State var swipeSelecting: Bool = false
+    @State var touchHandled: Bool = false
 
     func cardColor(): Color {
         if (this.isSelected) {
@@ -33,6 +37,10 @@ class ReplyEmailListItemView {
                         BuildReplyProfileImage(this.email.sender.avatar, 40)
                     }
                 }
+                .width(40)
+                .height(40)
+                .justifyContent(FlexAlign.Center)
+                .alignItems(VerticalAlign.Center)
                 .onClick({ _ => this.onToggleSelection() })
 
                 Row() {
@@ -67,6 +75,30 @@ class ReplyEmailListItemView {
             }
             .width(100.percent)
             .alignItems(VerticalAlign.Center)
+            .onTouch({ event =>
+                if (event.touches.size > 0) {
+                    let touch = event.touches[0]
+                    if (event.eventType == TouchType.Down) {
+                        this.touchStartX = touch.screenX
+                        this.touchStartY = touch.screenY
+                        this.swipeSelecting = false
+                        this.touchHandled = false
+                    } else if (event.eventType == TouchType.Move) {
+                        let deltaX = touch.screenX - this.touchStartX
+                        let deltaY = touch.screenY - this.touchStartY
+                        let absDeltaY = if (deltaY < 0.0) { -deltaY } else { deltaY }
+                        if (!this.swipeSelecting && deltaX > 48.0 && deltaX > absDeltaY) {
+                            this.swipeSelecting = true
+                            this.touchHandled = true
+                            this.onToggleSelection()
+                            event.stopPropagation()
+                        }
+                    } else if (event.eventType == TouchType.Up || event.eventType == TouchType.Cancel) {
+                        this.swipeSelecting = false
+                        this.touchHandled = false
+                    }
+                }
+            })
 
             Column() {
                 Text(this.email.subject)

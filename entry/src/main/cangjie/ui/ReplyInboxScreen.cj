@@ -107,7 +107,7 @@ public class ReplyInboxScreen {
 
                         Scroll() {
                             Column() {
-                                ForEach(this.uiState.emails, itemGeneratorFunc: { email: Email, _: Int64 =>
+                                ForEach(this.filteredEmails(), itemGeneratorFunc: { email: Email, _: Int64 =>
                                     if (startsWithIgnoreCase(email.subject, this.query) || startsWithIgnoreCase(email.sender.fullName, this.query)) {
                                         Column() {
                                             BuildEmailListItem(
@@ -181,6 +181,7 @@ public class ReplyInboxScreen {
             }
             .width(100.percent)
             .height(100.percent)
+            .onAppear({ => this.syncLocalUiState(this.uiState) })
         } else if (this.detailOnlyOpen && this.uiState.emails.size > 0) {
             Column() {
                 BuildEmailDetailHeader(this.currentEmail(), true, { => this.closeDetailScreen() })
@@ -239,7 +240,7 @@ public class ReplyInboxScreen {
 
                 Scroll() {
                     Column() {
-                        ForEach(this.uiState.emails, itemGeneratorFunc: { email: Email, _: Int64 =>
+                        ForEach(this.filteredEmails(), itemGeneratorFunc: { email: Email, _: Int64 =>
                             if (startsWithIgnoreCase(email.subject, this.query) || startsWithIgnoreCase(email.sender.fullName, this.query)) {
                                 Column() {
                                     BuildEmailListItem(

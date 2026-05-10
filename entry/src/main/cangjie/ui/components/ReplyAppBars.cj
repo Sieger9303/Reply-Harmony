@@ -132,7 +132,6 @@ public func BuildEmailDetailHeader(email: Email, isFullScreen: Bool, onBackPress
             .backgroundColor(REPLY_SURFACE)
             .borderRadius(20)
             .margin(right: 12)
-            .border(width: 1, color: REPLY_OUTLINE)
             .onClick({ _ => onBackPressed() })
         }
         Column() {
