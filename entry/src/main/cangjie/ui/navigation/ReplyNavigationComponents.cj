@@ -30,53 +30,70 @@ func destinationSelected(currentRoute: Route, destination: ReplyTopLevelDestinat
     currentRoute == destination.route
 }
 
-@Builder
-func BuildWrapperRouteContent(currentRoute: Route, homeState: ReplyHomeStateHolder, contentType: ReplyContentType): Unit {
-    if (currentRoute == Route.Inbox) {
-        ReplyInboxScreen(homeState: homeState, contentType: contentType)
-    } else {
-        BuildEmptyComingSoon()
+@Component
+public class ReplyWrapperRouteContent {
+    @Prop var currentRoute: Route
+    @Link var homeState: ReplyHomeStateHolder
+    @Prop var contentType: ReplyContentType
+
+    public func build(): Unit {
+        if (this.currentRoute == Route.Inbox) {
+            ReplyInboxScreen(homeState: this.homeState, contentType: this.contentType)
+        } else {
+            BuildEmptyComingSoon()
+        }
     }
 }
 
-@Builder
-public func BuildRouteTabLabel(icon: String, route: Route, selected: Bool, onClick: () -> Unit): Unit {
-    Column() {
-        Image(mediaResourceForName(icon))
-            .width(20)
-            .height(20)
-            .fillColor(if (selected) { REPLY_PRIMARY } else { REPLY_OUTLINE })
-        if (route == Route.Inbox) {
-            Text(@r(app.string.tab_inbox))
-                .fontSize(12)
-                .fontWeight(if (selected) { FontWeight.W700 } else { FontWeight.W400 })
-                .fontColor(if (selected) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
-                .margin(top: 4)
-        } else if (route == Route.Articles) {
-            Text(@r(app.string.tab_article))
-                .fontSize(12)
-                .fontWeight(if (selected) { FontWeight.W700 } else { FontWeight.W400 })
-                .fontColor(if (selected) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
-                .margin(top: 4)
-        } else if (route == Route.DirectMessages) {
-            Text(@r(app.string.tab_dm))
-                .fontSize(12)
-                .fontWeight(if (selected) { FontWeight.W700 } else { FontWeight.W400 })
-                .fontColor(if (selected) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
-                .margin(top: 4)
-        } else {
-            Text(@r(app.string.tab_groups))
-                .fontSize(12)
-                .fontWeight(if (selected) { FontWeight.W700 } else { FontWeight.W400 })
-                .fontColor(if (selected) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
-                .margin(top: 4)
-        }
+@Component
+public class ReplyRouteTabLabel {
+    @Prop var icon: String
+    @Prop var route: Route
+    @Prop var currentRoute: Route
+    @Prop var onClick: () -> Unit
+
+    func selected(): Bool {
+        this.currentRoute == this.route
     }
-    .width(100.percent)
-    .padding(top: 10, bottom: 10)
-    .justifyContent(FlexAlign.Center)
-    .alignItems(HorizontalAlign.Center)
-    .onClick({ _ => onClick() })
+
+    public func build(): Unit {
+        Column() {
+            Image(mediaResourceForName(this.icon))
+                .width(20)
+                .height(20)
+                .fillColor(if (this.selected()) { REPLY_PRIMARY } else { REPLY_OUTLINE })
+            if (this.route == Route.Inbox) {
+                Text(@r(app.string.tab_inbox))
+                    .fontSize(12)
+                    .fontWeight(if (this.selected()) { FontWeight.W700 } else { FontWeight.W400 })
+                    .fontColor(if (this.selected()) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
+                    .margin(top: 4)
+            } else if (this.route == Route.Articles) {
+                Text(@r(app.string.tab_article))
+                    .fontSize(12)
+                    .fontWeight(if (this.selected()) { FontWeight.W700 } else { FontWeight.W400 })
+                    .fontColor(if (this.selected()) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
+                    .margin(top: 4)
+            } else if (this.route == Route.DirectMessages) {
+                Text(@r(app.string.tab_dm))
+                    .fontSize(12)
+                    .fontWeight(if (this.selected()) { FontWeight.W700 } else { FontWeight.W400 })
+                    .fontColor(if (this.selected()) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
+                    .margin(top: 4)
+            } else {
+                Text(@r(app.string.tab_groups))
+                    .fontSize(12)
+                    .fontWeight(if (this.selected()) { FontWeight.W700 } else { FontWeight.W400 })
+                    .fontColor(if (this.selected()) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
+                    .margin(top: 4)
+            }
+        }
+        .width(100.percent)
+        .padding(top: 10, bottom: 10)
+        .justifyContent(FlexAlign.Center)
+        .alignItems(HorizontalAlign.Center)
+        .onClick({ _ => this.onClick() })
+    }
 }
 
 @Builder
@@ -127,262 +144,331 @@ func BuildDrawerHeader(showCloseButton: Bool, onClose: () -> Unit): Unit {
     .padding(left: 16, right: 16, top: 16, bottom: 16)
 }
 
-@Builder
-func BuildDestinationRow(destination: ReplyTopLevelDestination, selected: Bool, centered: Bool): Unit {
-    Row() {
-        Image(mediaResourceForName(destination.icon))
-            .width(20)
-            .height(20)
-            .fillColor(if (selected) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
-        if (destination.route == Route.Inbox) {
-            Text(@r(app.string.tab_inbox))
-                .fontSize(14)
-                .fontWeight(if (selected) { FontWeight.W700 } else { FontWeight.W400 })
-                .fontColor(if (selected) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
-                .margin(left: 12)
-        } else if (destination.route == Route.Articles) {
-            Text(@r(app.string.tab_article))
-                .fontSize(14)
-                .fontWeight(if (selected) { FontWeight.W700 } else { FontWeight.W400 })
-                .fontColor(if (selected) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
-                .margin(left: 12)
-        } else if (destination.route == Route.DirectMessages) {
-            Text(@r(app.string.tab_dm))
-                .fontSize(14)
-                .fontWeight(if (selected) { FontWeight.W700 } else { FontWeight.W400 })
-                .fontColor(if (selected) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
-                .margin(left: 12)
-        } else {
-            Text(@r(app.string.tab_groups))
-                .fontSize(14)
-                .fontWeight(if (selected) { FontWeight.W700 } else { FontWeight.W400 })
-                .fontColor(if (selected) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
-                .margin(left: 12)
-        }
+@Component
+public class ReplyDestinationRow {
+    @Prop var destination: ReplyTopLevelDestination
+    @Prop var currentRoute: Route
+    @Prop var centered: Bool
+
+    func selected(): Bool {
+        destinationSelected(this.currentRoute, this.destination)
     }
-    .width(100.percent)
-    .padding(left: 16, right: 16, top: 14, bottom: 14)
-    .backgroundColor(if (selected) { REPLY_SELECTED } else { Color.Transparent })
-    .borderRadius(20)
-    .alignItems(VerticalAlign.Center)
-    .justifyContent(if (centered) { FlexAlign.Center } else { FlexAlign.Start })
+
+    public func build(): Unit {
+        Row() {
+            Image(mediaResourceForName(this.destination.icon))
+                .width(20)
+                .height(20)
+                .fillColor(if (this.selected()) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
+            if (this.destination.route == Route.Inbox) {
+                Text(@r(app.string.tab_inbox))
+                    .fontSize(14)
+                    .fontWeight(if (this.selected()) { FontWeight.W700 } else { FontWeight.W400 })
+                    .fontColor(if (this.selected()) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
+                    .margin(left: 12)
+            } else if (this.destination.route == Route.Articles) {
+                Text(@r(app.string.tab_article))
+                    .fontSize(14)
+                    .fontWeight(if (this.selected()) { FontWeight.W700 } else { FontWeight.W400 })
+                    .fontColor(if (this.selected()) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
+                    .margin(left: 12)
+            } else if (this.destination.route == Route.DirectMessages) {
+                Text(@r(app.string.tab_dm))
+                    .fontSize(14)
+                    .fontWeight(if (this.selected()) { FontWeight.W700 } else { FontWeight.W400 })
+                    .fontColor(if (this.selected()) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
+                    .margin(left: 12)
+            } else {
+                Text(@r(app.string.tab_groups))
+                    .fontSize(14)
+                    .fontWeight(if (this.selected()) { FontWeight.W700 } else { FontWeight.W400 })
+                    .fontColor(if (this.selected()) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
+                    .margin(left: 12)
+            }
+        }
+        .width(100.percent)
+        .padding(left: 16, right: 16, top: 14, bottom: 14)
+        .backgroundColor(if (this.selected()) { REPLY_SELECTED } else { Color.Transparent })
+        .borderRadius(20)
+        .alignItems(VerticalAlign.Center)
+        .justifyContent(if (this.centered) { FlexAlign.Center } else { FlexAlign.Start })
+    }
 }
 
-@Builder
-public func BuildReplyBottomNavigation(currentRoute: Route, onNavigate: (Route) -> Unit): Unit {
-    Row() {
-        ForEach(TOP_LEVEL_DESTINATIONS, itemGeneratorFunc: { destination: ReplyTopLevelDestination, _: Int64 =>
-            Row() {
-                BuildRouteTabLabel(
-                    destination.icon,
-                    destination.route,
-                    destinationSelected(currentRoute, destination),
-                    { => onNavigate(destination.route) }
-                )
-            }
-            .layoutWeight(1)
-            .justifyContent(FlexAlign.Center)
-        })
-    }
-    .width(100.percent)
-    .padding(left: 12, right: 12, top: 6, bottom: 6)
-    .backgroundColor(REPLY_SURFACE)
-}
+@Component
+public class ReplyBottomNavigation {
+    @Prop var currentRoute: Route
+    @Prop var onNavigate: (Route) -> Unit
 
-@Builder
-public func BuildReplyNavigationRail(
-    currentRoute: Route,
-    navigationContentPosition: ReplyNavigationContentPosition,
-    onNavigate: (Route) -> Unit,
-    onOpenDrawer: () -> Unit
-): Unit {
-    Column() {
-        Column() {
-            Row() {
-                Image(mediaResourceForName("ic_menu"))
-                    .width(20)
-                    .height(20)
-                    .fillColor(REPLY_ON_SURFACE_VARIANT)
-            }
-            .width(44)
-            .height(44)
-            .justifyContent(FlexAlign.Center)
-            .borderRadius(22)
-            .backgroundColor(REPLY_SURFACE_VARIANT)
-            .onClick({ _ => onOpenDrawer() })
-
-            Column() {
-                BuildComposeButton(false)
-            }
-            .margin(top: 16, bottom: 24)
-        }
-        .alignItems(HorizontalAlign.Center)
-
-        Column() {
+    public func build(): Unit {
+        Row() {
             ForEach(TOP_LEVEL_DESTINATIONS, itemGeneratorFunc: { destination: ReplyTopLevelDestination, _: Int64 =>
-                Column() {
-                    Image(mediaResourceForName(destination.icon))
-                        .width(22)
-                        .height(22)
-                        .fillColor(if (destinationSelected(currentRoute, destination)) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
+                Row() {
+                    ReplyRouteTabLabel(
+                        icon: destination.icon,
+                        route: destination.route,
+                        currentRoute: this.currentRoute,
+                        onClick: { => this.onNavigate(destination.route) }
+                    )
                 }
-                .width(56)
-                .height(56)
+                .layoutWeight(1)
                 .justifyContent(FlexAlign.Center)
-                .alignItems(HorizontalAlign.Center)
-                .backgroundColor(if (destinationSelected(currentRoute, destination)) { REPLY_SELECTED } else { Color.Transparent })
-                .borderRadius(28)
-                .margin(bottom: 8)
-                .onClick({ _ => onNavigate(destination.route) })
             })
         }
-        .layoutWeight(if (navigationContentPosition == ReplyNavigationContentPosition.CENTER) { 1 } else { 0 })
-        .justifyContent(if (navigationContentPosition == ReplyNavigationContentPosition.CENTER) { FlexAlign.Center } else { FlexAlign.Start })
-        .alignItems(HorizontalAlign.Center)
+        .width(100.percent)
+        .padding(left: 12, right: 12, top: 6, bottom: 6)
+        .backgroundColor(REPLY_SURFACE)
     }
-    .width(88)
-    .height(100.percent)
-    .padding(top: 16, bottom: 16)
-    .backgroundColor(REPLY_SURFACE)
 }
 
-@Builder
-func BuildDrawerContent(
-    currentRoute: Route,
-    navigationContentPosition: ReplyNavigationContentPosition,
-    onNavigate: (Route) -> Unit,
-    showCloseButton: Bool,
-    onClose: () -> Unit
-): Unit {
-    Column() {
-        BuildDrawerHeader(showCloseButton, onClose)
+@Component
+public class ReplyNavigationRail {
+    @Prop var currentRoute: Route
+    @Prop var navigationContentPosition: ReplyNavigationContentPosition
+    @Prop var onNavigate: (Route) -> Unit
+    @Prop var onOpenDrawer: () -> Unit
 
+    public func build(): Unit {
         Column() {
-            BuildComposeButton(true)
-        }
-        .padding(left: 16, right: 16, bottom: 24)
+            Column() {
+                Row() {
+                    Image(mediaResourceForName("ic_menu"))
+                        .width(20)
+                        .height(20)
+                        .fillColor(REPLY_ON_SURFACE_VARIANT)
+                }
+                .width(44)
+                .height(44)
+                .justifyContent(FlexAlign.Center)
+                .borderRadius(22)
+                .backgroundColor(REPLY_SURFACE_VARIANT)
+                .onClick({ _ => this.onOpenDrawer() })
 
-        Scroll() {
+                Column() {
+                    BuildComposeButton(false)
+                }
+                .margin(top: 16, bottom: 24)
+            }
+            .alignItems(HorizontalAlign.Center)
+
             Column() {
                 ForEach(TOP_LEVEL_DESTINATIONS, itemGeneratorFunc: { destination: ReplyTopLevelDestination, _: Int64 =>
                     Column() {
-                        BuildDestinationRow(
-                            destination,
-                            destinationSelected(currentRoute, destination),
-                            false
-                        )
+                        Image(mediaResourceForName(destination.icon))
+                            .width(22)
+                            .height(22)
+                            .fillColor(if (destinationSelected(this.currentRoute, destination)) { REPLY_PRIMARY } else { REPLY_ON_SURFACE_VARIANT })
                     }
-                    .margin(left: 12, right: 12, bottom: 8)
-                    .onClick({ _ =>
-                        onNavigate(destination.route)
-                        if (showCloseButton) {
-                            onClose()
-                        }
-                    })
+                    .width(56)
+                    .height(56)
+                    .justifyContent(FlexAlign.Center)
+                    .alignItems(HorizontalAlign.Center)
+                    .backgroundColor(if (destinationSelected(this.currentRoute, destination)) { REPLY_SELECTED } else { Color.Transparent })
+                    .borderRadius(28)
+                    .margin(bottom: 8)
+                    .onClick({ _ => this.onNavigate(destination.route) })
                 })
             }
-            .width(100.percent)
-            .justifyContent(if (navigationContentPosition == ReplyNavigationContentPosition.CENTER) { FlexAlign.Center } else { FlexAlign.Start })
+            .layoutWeight(if (this.navigationContentPosition == ReplyNavigationContentPosition.CENTER) { 1 } else { 0 })
+            .justifyContent(if (this.navigationContentPosition == ReplyNavigationContentPosition.CENTER) { FlexAlign.Center } else { FlexAlign.Start })
+            .alignItems(HorizontalAlign.Center)
         }
-        .layoutWeight(1)
+        .width(88)
+        .height(100.percent)
+        .padding(top: 16, bottom: 16)
+        .backgroundColor(REPLY_SURFACE)
     }
-    .width(100.percent)
-    .height(100.percent)
 }
 
-@Builder
-public func BuildPermanentNavigationDrawer(
-    currentRoute: Route,
-    navigationContentPosition: ReplyNavigationContentPosition,
-    onNavigate: (Route) -> Unit
-): Unit {
-    Column() {
-        BuildDrawerContent(currentRoute, navigationContentPosition, onNavigate, false, { => })
-    }
-    .width(280)
-    .height(100.percent)
-    .backgroundColor(REPLY_SURFACE_VARIANT)
-}
+@Component
+public class ReplyDrawerContent {
+    @Prop var currentRoute: Route
+    @Prop var navigationContentPosition: ReplyNavigationContentPosition
+    @Prop var onNavigate: (Route) -> Unit
+    @Prop var showCloseButton: Bool
+    @Prop var onClose: () -> Unit
 
-@Builder
-func BuildModalNavigationDrawer(
-    currentRoute: Route,
-    navigationContentPosition: ReplyNavigationContentPosition,
-    onNavigate: (Route) -> Unit,
-    onCloseDrawer: () -> Unit
-): Unit {
-    Row() {
+    public func build(): Unit {
         Column() {
-            BuildDrawerContent(currentRoute, navigationContentPosition, onNavigate, true, onCloseDrawer)
+            BuildDrawerHeader(this.showCloseButton, this.onClose)
+
+            Column() {
+                BuildComposeButton(true)
+            }
+            .padding(left: 16, right: 16, bottom: 24)
+
+            Scroll() {
+                Column() {
+                    ForEach(TOP_LEVEL_DESTINATIONS, itemGeneratorFunc: { destination: ReplyTopLevelDestination, _: Int64 =>
+                        Column() {
+                            ReplyDestinationRow(
+                                destination: destination,
+                                currentRoute: this.currentRoute,
+                                centered: false
+                            )
+                        }
+                        .margin(left: 12, right: 12, bottom: 8)
+                        .onClick({ _ =>
+                            this.onNavigate(destination.route)
+                            if (this.showCloseButton) {
+                                this.onClose()
+                            }
+                        })
+                    })
+                }
+                .width(100.percent)
+                .justifyContent(if (this.navigationContentPosition == ReplyNavigationContentPosition.CENTER) { FlexAlign.Center } else { FlexAlign.Start })
+            }
+            .layoutWeight(1)
+        }
+        .width(100.percent)
+        .height(100.percent)
+    }
+}
+
+@Component
+public class ReplyPermanentNavigationDrawer {
+    @Prop var currentRoute: Route
+    @Prop var navigationContentPosition: ReplyNavigationContentPosition
+    @Prop var onNavigate: (Route) -> Unit
+
+    public func build(): Unit {
+        Column() {
+            ReplyDrawerContent(
+                currentRoute: this.currentRoute,
+                navigationContentPosition: this.navigationContentPosition,
+                onNavigate: this.onNavigate,
+                showCloseButton: false,
+                onClose: { => }
+            )
         }
         .width(280)
         .height(100.percent)
         .backgroundColor(REPLY_SURFACE_VARIANT)
-
-        Blank()
-            .layoutWeight(1)
-            .height(100.percent)
-            .backgroundColor(Color.Transparent)
-            .onClick({ _ => onCloseDrawer() })
     }
-    .width(100.percent)
-    .height(100.percent)
-    .backgroundColor(REPLY_SCRIM)
 }
 
-@Builder
-public func BuildReplyNavigationWrapper(
-    navigationType: ReplyNavigationType,
-    navigationContentPosition: ReplyNavigationContentPosition,
-    currentRoute: Route,
-    drawerOpen: Bool,
-    homeState: ReplyHomeStateHolder,
-    contentType: ReplyContentType,
-    onNavigate: (Route) -> Unit,
-    onOpenDrawer: () -> Unit,
-    onCloseDrawer: () -> Unit
-): Unit {
-    if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
-        Column() {
-            Column() {
-                BuildWrapperRouteContent(currentRoute, homeState, contentType)
-            }
-            .layoutWeight(1)
-            .width(100.percent)
+@Component
+public class ReplyModalNavigationDrawer {
+    @Prop var currentRoute: Route
+    @Prop var navigationContentPosition: ReplyNavigationContentPosition
+    @Prop var onNavigate: (Route) -> Unit
+    @Prop var onCloseDrawer: () -> Unit
 
-            BuildReplyBottomNavigation(currentRoute, onNavigate)
+    public func build(): Unit {
+        Row() {
+            Column() {
+                ReplyDrawerContent(
+                    currentRoute: this.currentRoute,
+                    navigationContentPosition: this.navigationContentPosition,
+                    onNavigate: this.onNavigate,
+                    showCloseButton: true,
+                    onClose: this.onCloseDrawer
+                )
+            }
+            .width(280)
+            .height(100.percent)
+            .backgroundColor(REPLY_SURFACE_VARIANT)
+
+            Blank()
+                .layoutWeight(1)
+                .height(100.percent)
+                .backgroundColor(Color.Transparent)
+                .onClick({ _ => this.onCloseDrawer() })
         }
         .width(100.percent)
         .height(100.percent)
-    } else if (navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
-        Stack() {
-            Row() {
-                BuildReplyNavigationRail(currentRoute, navigationContentPosition, onNavigate, onOpenDrawer)
+        .backgroundColor(REPLY_SCRIM)
+    }
+}
+
+@Component
+public class ReplyNavigationWrapper {
+    @Prop var navigationType: ReplyNavigationType
+    @Prop var navigationContentPosition: ReplyNavigationContentPosition
+    @Link var currentRoute: Route
+    @State var activeRoute: Route = Route.Inbox
+    @Link var drawerOpen: Bool
+    @Link var homeState: ReplyHomeStateHolder
+    @Prop var contentType: ReplyContentType
+    @Prop var onNavigate: (Route) -> Unit
+    @Prop var onOpenDrawer: () -> Unit
+    @Prop var onCloseDrawer: () -> Unit
+
+    func handleNavigate(route: Route): Unit {
+        this.activeRoute = route
+        this.currentRoute = route
+        this.drawerOpen = false
+        this.onNavigate(route)
+    }
+
+    func handleOpenDrawer(): Unit {
+        this.drawerOpen = true
+        this.onOpenDrawer()
+    }
+
+    func handleCloseDrawer(): Unit {
+        this.drawerOpen = false
+        this.onCloseDrawer()
+    }
+
+    public func build(): Unit {
+        if (this.navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
+            Column() {
                 Column() {
-                    BuildWrapperRouteContent(currentRoute, homeState, contentType)
+                    ReplyWrapperRouteContent(currentRoute: this.activeRoute, homeState: this.homeState, contentType: this.contentType)
+                }
+                .layoutWeight(1)
+                .width(100.percent)
+
+                ReplyBottomNavigation(currentRoute: this.activeRoute, onNavigate: { route: Route => this.handleNavigate(route) })
+            }
+            .width(100.percent)
+            .height(100.percent)
+        } else if (this.navigationType == ReplyNavigationType.NAVIGATION_RAIL) {
+            Stack() {
+                Row() {
+                    ReplyNavigationRail(
+                        currentRoute: this.activeRoute,
+                        navigationContentPosition: this.navigationContentPosition,
+                        onNavigate: { route: Route => this.handleNavigate(route) },
+                        onOpenDrawer: { => this.handleOpenDrawer() }
+                    )
+                    Column() {
+                        ReplyWrapperRouteContent(currentRoute: this.activeRoute, homeState: this.homeState, contentType: this.contentType)
+                    }
+                    .layoutWeight(1)
+                    .height(100.percent)
+                }
+                .width(100.percent)
+                .height(100.percent)
+
+                if (this.drawerOpen) {
+                    ReplyModalNavigationDrawer(
+                        currentRoute: this.activeRoute,
+                        navigationContentPosition: this.navigationContentPosition,
+                        onNavigate: { route: Route => this.handleNavigate(route) },
+                        onCloseDrawer: { => this.handleCloseDrawer() }
+                    )
+                }
+            }
+            .width(100.percent)
+            .height(100.percent)
+        } else {
+            Row() {
+                ReplyPermanentNavigationDrawer(
+                    currentRoute: this.activeRoute,
+                    navigationContentPosition: this.navigationContentPosition,
+                    onNavigate: { route: Route => this.handleNavigate(route) }
+                )
+                Column() {
+                    ReplyWrapperRouteContent(currentRoute: this.activeRoute, homeState: this.homeState, contentType: this.contentType)
                 }
                 .layoutWeight(1)
                 .height(100.percent)
             }
             .width(100.percent)
             .height(100.percent)
-
-            if (drawerOpen) {
-                BuildModalNavigationDrawer(currentRoute, navigationContentPosition, onNavigate, onCloseDrawer)
-            }
         }
-        .width(100.percent)
-        .height(100.percent)
-    } else {
-        Row() {
-            BuildPermanentNavigationDrawer(currentRoute, navigationContentPosition, onNavigate)
-            Column() {
-                BuildWrapperRouteContent(currentRoute, homeState, contentType)
-            }
-            .layoutWeight(1)
-            .height(100.percent)
-        }
-        .width(100.percent)
-        .height(100.percent)
     }
 }

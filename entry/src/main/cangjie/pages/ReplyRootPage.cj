@@ -61,16 +61,16 @@ class ReplyRootPage {
         ) {
             GridCol() {
                 Column() {
-                    BuildReplyNavigationWrapper(
-                        this.currentNavigationType(),
-                        this.currentNavigationContentPosition(),
-                        this.currentRoute,
-                        this.drawerOpen,
-                        this.homeState,
-                        this.currentContentType(),
-                        { route: Route => this.navigateTo(route) },
-                        { => this.drawerOpen = true },
-                        { => this.drawerOpen = false }
+                    ReplyNavigationWrapper(
+                        navigationType: this.currentNavigationType(),
+                        navigationContentPosition: this.currentNavigationContentPosition(),
+                        currentRoute: this.currentRoute,
+                        drawerOpen: this.drawerOpen,
+                        homeState: this.homeState,
+                        contentType: this.currentContentType(),
+                        onNavigate: { route: Route => this.navigateTo(route) },
+                        onOpenDrawer: { => this.drawerOpen = true },
+                        onCloseDrawer: { => this.drawerOpen = false }
                     )
                 }
                 .width(100.percent)
