@@ -27,13 +27,22 @@ public class ReplyInboxScreen {
     @State var selectedEmailIds: Array<Int64> = []
     @State var openedEmailId: Int64 = -1
     @State var detailOnlyOpen: Bool = false
+    @State var refreshVersion: Int64 = 0
 
     func isDualPane(): Bool {
         this.contentType == ReplyContentType.DUAL_PANE
     }
 
+    func copySelectedEmailIds(ids: Array<Int64>): Array<Int64> {
+        var copied = ArrayList<Int64>()
+        for (id in ids) {
+            copied.add(id)
+        }
+        copied.toArray()
+    }
+
     func syncLocalUiState(state: ReplyHomeUIState): Unit {
-        this.selectedEmailIds = state.selectedEmails
+        this.selectedEmailIds = this.copySelectedEmailIds(state.selectedEmails)
         this.detailOnlyOpen = state.isDetailOnlyOpen
         match (state.openedEmail) {
             case Some(opened) => this.openedEmailId = opened.id
@@ -44,6 +53,12 @@ public class ReplyInboxScreen {
                     this.openedEmailId = -1
                 }
         }
+    }
+
+    func emailItemKey(email: Email): String {
+        let selectedPart = if (this.selectedEmailIds.contains(email.id)) { "selected" } else { "normal" }
+        let openedPart = if (this.openedEmailId == email.id) { "opened" } else { "closed" }
+        email.id.toString() + "_" + selectedPart + "_" + openedPart + "_" + this.refreshVersion.toString()
     }
 
     func filteredEmails(): Array<Email> {
@@ -68,6 +83,7 @@ public class ReplyInboxScreen {
     func pushUiState(): Unit {
         let nextState = this.homeState.uiState
         this.syncLocalUiState(nextState)
+        this.refreshVersion = this.refreshVersion + 1
         this.onUiStateChange(nextState)
     }
 
@@ -107,21 +123,27 @@ public class ReplyInboxScreen {
 
                         Scroll() {
                             Column() {
-                                ForEach(this.filteredEmails(), itemGeneratorFunc: { email: Email, _: Int64 =>
-                                    if (startsWithIgnoreCase(email.subject, this.query) || startsWithIgnoreCase(email.sender.fullName, this.query)) {
-                                        Column() {
-                                            BuildEmailListItem(
-                                                email,
-                                                this.currentEmail().id == email.id,
-                                                this.selectedEmailIds.contains(email.id),
-                                                { => this.openEmail(email) },
-                                                { => this.toggleSelectedEmail(email) }
-                                            )
+                                ForEach(
+                                    this.filteredEmails(),
+                                    itemGeneratorFunc: { email: Email, _: Int64 =>
+                                        if (startsWithIgnoreCase(email.subject, this.query) || startsWithIgnoreCase(email.sender.fullName, this.query)) {
+                                            Column() {
+                                                BuildEmailListItem(
+                                                    email,
+                                                    this.openedEmailId == email.id,
+                                                    this.selectedEmailIds.contains(email.id),
+                                                    { => this.openEmail(email) },
+                                                    { => this.toggleSelectedEmail(email) }
+                                                )
+                                            }
+                                            .width(100.percent)
+                                            .margin(left: 12, right: 12, top: 4, bottom: 4)
                                         }
-                                        .width(100.percent)
-                                        .margin(left: 12, right: 12, top: 4, bottom: 4)
+                                    },
+                                    keyGeneratorFunc: { email: Email, _: Int64 =>
+                                        this.emailItemKey(email)
                                     }
-                                })
+                                )
                             }
                             .width(100.percent)
                         }
@@ -240,21 +262,27 @@ public class ReplyInboxScreen {
 
                 Scroll() {
                     Column() {
-                        ForEach(this.filteredEmails(), itemGeneratorFunc: { email: Email, _: Int64 =>
-                            if (startsWithIgnoreCase(email.subject, this.query) || startsWithIgnoreCase(email.sender.fullName, this.query)) {
-                                Column() {
-                                    BuildEmailListItem(
-                                        email,
-                                        this.currentEmail().id == email.id,
-                                        this.selectedEmailIds.contains(email.id),
-                                        { => this.openEmail(email) },
-                                        { => this.toggleSelectedEmail(email) }
-                                    )
+                        ForEach(
+                            this.filteredEmails(),
+                            itemGeneratorFunc: { email: Email, _: Int64 =>
+                                if (startsWithIgnoreCase(email.subject, this.query) || startsWithIgnoreCase(email.sender.fullName, this.query)) {
+                                    Column() {
+                                        BuildEmailListItem(
+                                            email,
+                                            this.openedEmailId == email.id,
+                                            this.selectedEmailIds.contains(email.id),
+                                            { => this.openEmail(email) },
+                                            { => this.toggleSelectedEmail(email) }
+                                        )
+                                    }
+                                    .width(100.percent)
+                                    .margin(left: 12, right: 12, top: 4, bottom: 4)
                                 }
-                                .width(100.percent)
-                                .margin(left: 12, right: 12, top: 4, bottom: 4)
+                            },
+                            keyGeneratorFunc: { email: Email, _: Int64 =>
+                                this.emailItemKey(email)
                             }
-                        })
+                        )
                     }
                     .width(100.percent)
                 }
